@@ -1,5 +1,5 @@
 #lang racket/load
-(load "perface.scm")
+(load "preface.scm")
 
 ;(display (atom? 'atom))
 ;(display (atom? 'turkey))
