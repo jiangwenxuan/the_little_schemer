@@ -145,3 +145,49 @@
 ;(display (my-eqlist? l4 l5))
 ;(display (my-eqlist? l6 l7))
 ;(display (my-eqlist? l6 l8))
+
+(define the-equal?
+  (lambda (s1 s2)
+    (cond
+      ((and (atom? s1) (atom? s2))
+       (eqan? s1 s2))
+      ((atom? s1) #f)
+      ((atom? s2) #f)
+      (else (eqlist s1 s2)))))
+
+(define new-equal?
+  (lambda (s1 s2)
+    (cond
+      ((and (atom? s1) (atom? s2))
+       (eqan? s1 s2))
+      ((or (atom? s1) (atom? s2)) #f)
+      (else (eqlist? s1 s2)))))
+
+(define more-better-eqlist?
+  (lambda (l1 l2)
+    (cond
+      ((and (null? l1) (null? l2)) #t)
+      ((or (null? l1) (null? l2)) #f)
+      (else
+       (and (equal? (car l1) (car l2))
+            (more-better-eqlist? (cdr l1) (cdr l2)))))))
+
+(define s-rember
+  (lambda (s l)
+    (cond
+      ((null? l) '())
+      (else
+       (cond
+         ((new-equal? s (car l)) (cdr l))
+         (else
+          (cons (car l)
+                (s-rember s (cdr l)))))))))
+
+(define better-s-rember
+  (lambda (s l)
+    (cond
+      ((null? l) '())
+      ((new-equal? s (car l)) (cdr l))
+      (else
+       (cons (car l)
+             (better-s-rember s (cdr l)))))))
