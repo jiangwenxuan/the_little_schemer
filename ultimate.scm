@@ -104,6 +104,188 @@
 ;(define l '(pizza with sausage and bacon))
 ;(display (yyy a l))
 
+; these two functions needs character 6's functions
+;(define atom-to-function
+;  (lambda (x)
+;    (cond
+;      ((eq? x '+) +)
+;      ((eq? x '*) *)
+;      (else power))))
+;
+;(define value
+;  (lambda (nexp)
+;    (cond
+;      ((atom? nexp) nexp)
+;      (else
+;       ((atom-to-function (operator nexp))
+;        (value (1st-sub-exp nexp))
+;        (value (2st-sub-exp nexp)))))))
+
+(define multirember
+  (lambda (a lat)
+    (cond
+      ((null? lat) '())
+      ((eq? (car lat) a)
+       (multirember a (cdr lat)))
+      (else
+       (cons (car lat)
+             (multirember a (cdr lat)))))))
+
+(define multirember-f
+  (lambda (test?)
+    (lambda (a lat)
+      (cond
+        ((null? lat) '())
+        ((test? a (car lat))
+         ((multirember-f test?) a (cdr lat)))
+        (else
+         (cons (car lat)
+               ((multirember-f test?) a (cdr lat))))))))
+
+(define multirember-eq?
+  (multirember-f eq?))
+(define eq?-tuna
+  (eq?-c 'tuna))
+
+(define multiremberT
+  (lambda (test? lat)
+    (cond
+      ((null? lat) '())
+      ((test? (car lat))
+       (multiremberT test? (cdr lat)))
+      (else
+       (cons (car lat)
+             (multiremberT test? (cdr lat)))))))
+;(define l '(shrimp salad tuna salad and tuna))
+;(display (multiremberT eq?-tuna l))
+
+(define multirember-co
+  (lambda (a lat col)
+    (cond
+      ((null? lat)
+       (col (quote ()) (quote ())))
+      ((eq? (car lat) a)
+       (multirember-co a
+                       (cdr lat)
+                       (lambda (newlat seen)
+                         (col newlat
+                              (cons (car lat) seen)))))
+      (else
+       (multirember-co a
+                       (cdr lat)
+                       (lambda (newlat seen)
+                         (col (cons (car lat) newlat)
+                              seen)))))))
+(define a-friend
+  (lambda (x y)
+    (null? y)))
+;(multirember-co 'tuna '(tuna) a-friend)
+;(eq? 'tuna (car '(tuna)))
+
+(define lat1 '(strawberries tuna and swordfish))
+;(display (multirember-co 'tuna lat1 a-friend))
+(define lat2 '())
+;(display (multirember-co 'tuna lat2 a-friend))
+;(display (multirember-co 'tuna '(tuna) a-friend))
+
+;(define new-friend
+;  (lambda (newlat seen)
+;    (col newlat (cons (car lat) seen))))
+;(display (multirember-co 'tuna '(and tuna) a-friend))
+
+(define last-friend
+  (lambda (x y)
+    (length x)))
+
+(define multiinsertL
+  (lambda (new old lat)
+    (cond
+      ((null? lat) '())
+      ((eq? (car lat) old)
+       (cons new
+             (cons old
+                   (multiinsertL new old (cdr lat)))))
+      (else
+       (cons (car lat)
+             (multiinsertL new old (cdr lat)))))))
+
+(define multiinsertR
+  (lambda (new old lat)
+    (cond
+      ((null? lat) '())
+      ((eq? (car lat) old)
+       (cons old
+             (cons new
+                   (multiinsertR new old (cdr lat)))))
+      (else
+       (cons (car lat)
+             (multiinsertR new old (cdr lat)))))))
+
+(define multiinsertLR
+  (lambda (new oldL oldR lat)
+    (cond
+      ((null? lat) '())
+      ((eq? (car lat) oldL)
+       (cons new
+             (cons oldL
+                   (multiinsertLR new oldL oldR
+                                  (cdr lat)))))
+      ((eq? (car lat) oldR)
+       (cons oldR
+             (cons new
+                   (multiinsertLR new oldL oldR
+                                  (cdr lat)))))
+      (else
+       (cons (car lat)
+             (multiinsertLR new oldL oldR
+                            (cdr lat)))))))
+
+(define add1
+  (lambda (x)
+    (+ 1 x)))
+
+(define multiremberLR-co
+  (lambda (new oldL oldR lat col)
+    (cond
+      ((null? lat)
+       (col '() 0 0)
+      ((eq? oldL (car lat))
+       (multiremberLR-co new oldL oldR (cdr lat)
+                         (lambda (newlat L R)
+                           (col (cons new
+                                      (cons oldL
+                                            newlat))
+                                (add1 L)
+                                R))))
+      ((eq? oldR (car lat))
+       (multiremberLR-co new oldL oldR (cdr lat)
+                         (lambda (newlat L R)
+                           (col (cons oldR
+                                      (cons new
+                                            newlat))
+                                L
+                                (add1 R)))))
+      (else
+       (multiremberLR-co new oldL oldR (cdr lat)
+                         (lambda (newlat L R)
+                           (col (cons (car lat) newlat)
+                                L
+                                R))))))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
