@@ -133,7 +133,7 @@
       ((atom? x) #f)
       ((null? x) #f)
       ((null? (cdr x)) #f)
-      ((null? (car (cdr x))) #t)
+      ((null? (cdr (cdr x))) #t)
       (else #f))))
                      
 (define first
