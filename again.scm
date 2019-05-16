@@ -140,25 +140,6 @@
     (and (will-stop? last-try)
          (eternity x))))
 
-(define will-stop?
-  (lambda (x)
-    '()))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+;(define will-stop?
+;  (lambda (x)
+;    ))
